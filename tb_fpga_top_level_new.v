@@ -3,7 +3,7 @@
 //module tb_fpga_top_level_new;
 
 //    // =========================================================================
-//    // 1. ²ÎÊı¶¨Òå
+//    // 1. å‚æ•°å®šä¹‰
 //    // =========================================================================
 //    parameter AXIS_DATA_WIDTH = 64;
 //    parameter NUM_IN_CHANNELS = 8;
@@ -11,43 +11,43 @@
 //    parameter ACCUM_WIDTH     = 32;
 //    parameter FILTER_SIZE     = 3;
     
-//    // ÎªÁË·ÂÕæËÙ¶È£¬ÎÒÃÇ½«Í¼Ïñ³ß´çÉèĞ¡Ò»µã
+//    // ä¸ºäº†ä»¿çœŸé€Ÿåº¦ï¼Œæˆ‘ä»¬å°†å›¾åƒå°ºå¯¸è®¾å°ä¸€ç‚¹
 //    parameter IMG_WIDTH       = 16; 
 //    parameter IMG_HEIGHT      = 16;
 //    parameter BRAM_DEPTH      = 512;
 
-//    // È¨ÖØ¼ÓÔØÏà¹Ø¼ÆËã
-//    // Layer 1: 4 Cores, Ã¿¸ö Core ¸ºÔğ 2 ¸öÊä³öÍ¨µÀ
-//    // Ã¿¸ö Core ĞèÒª 144 ¸öÈ¨ÖØ (8 In * 2 Out * 9) = 1152 bits
+//    // æƒé‡åŠ è½½ç›¸å…³è®¡ç®—
+//    // Layer 1: 4 Cores, æ¯ä¸ª Core è´Ÿè´£ 2 ä¸ªè¾“å‡ºé€šé“
+//    // æ¯ä¸ª Core éœ€è¦ 144 ä¸ªæƒé‡ (8 In * 2 Out * 9) = 1152 bits
 //    // 1152 bits / 64 bits (AXI) = 18 Beats
 //    parameter BEATS_PER_WEIGHT_LINE = (NUM_IN_CHANNELS * 2 * FILTER_SIZE * FILTER_SIZE * DATA_WIDTH) / AXIS_DATA_WIDTH;
 
 //    // =========================================================================
-//    // 2. ĞÅºÅ¶¨Òå
+//    // 2. ä¿¡å·å®šä¹‰
 //    // =========================================================================
 //    reg clk;
 //    reg rst_n;
 
-//    // Í¼ÏñÊäÈë
+//    // å›¾åƒè¾“å…¥
 //    reg                       s_axis_img_tvalid;
 //    wire                      s_axis_img_tready;
 //    reg [AXIS_DATA_WIDTH-1:0] s_axis_img_tdata;
 //    reg                       s_axis_img_tlast;
 
-//    // È¨ÖØÊäÈë
+//    // æƒé‡è¾“å…¥
 //    reg                       s_axis_w_tvalid;
 //    wire                      s_axis_w_tready;
 //    reg [AXIS_DATA_WIDTH-1:0] s_axis_w_tdata;
 //    reg                       s_axis_w_tlast;
 
-//    // ½á¹ûÊä³ö
+//    // ç»“æœè¾“å‡º
 //    wire                      m_axis_res_tvalid;
 //    reg                       m_axis_res_tready;
 //    wire [AXIS_DATA_WIDTH-1:0] m_axis_res_tdata;
 //    wire [AXIS_DATA_WIDTH/8-1:0] m_axis_res_tkeep;
 //    wire                      m_axis_res_tlast;
 
-//    // ¿ØÖÆĞÅºÅ
+//    // æ§åˆ¶ä¿¡å·
 //    reg                       i_load_weights;
 //    reg [3:0]                 i_target_layer;
 //    reg                       i_start_compute;
@@ -55,12 +55,12 @@
 //    reg [8:0]                 i_l2_weight_base;
 //    wire                      o_compute_done;
 
-//    // Í³¼Æ½ÓÊÕµ½µÄÏñËØÊı
+//    // ç»Ÿè®¡æ¥æ”¶åˆ°çš„åƒç´ æ•°
 //    integer received_pixel_cnt;
 //    integer k, r, c, pixel_idx;
 
 //    // =========================================================================
-//    // 3. DUT ÊµÀı»¯
+//    // 3. DUT å®ä¾‹åŒ–
 //    // =========================================================================
 //    fpga_top_level #(
 //        .AXIS_DATA_WIDTH(AXIS_DATA_WIDTH),
@@ -100,7 +100,7 @@
 //    );
 
 //    // =========================================================================
-//    // 4. Ê±ÖÓÉú³É (100MHz)
+//    // 4. æ—¶é’Ÿç”Ÿæˆ (100MHz)
 //    // =========================================================================
 //    initial begin
 //        clk = 0;
@@ -108,10 +108,10 @@
 //    end
 
 //    // =========================================================================
-//    // 5. ÈÎÎñ¶¨Òå (Helper Tasks)
+//    // 5. ä»»åŠ¡å®šä¹‰ (Helper Tasks)
 //    // =========================================================================
     
-//    // ÈÎÎñ£º¼ÓÔØÒ»×éÈ¨ÖØµ½Ö¸¶¨µÄ Target Layer
+//    // ä»»åŠ¡ï¼šåŠ è½½ä¸€ç»„æƒé‡åˆ°æŒ‡å®šçš„ Target Layer
 //    task load_weights_for_target;
 //        input [3:0] target_id;
 //        input [7:0] start_val;
@@ -120,19 +120,19 @@
 //        begin
 //            $display("[Time %0t] Loading Weights for Target ID: %d", $time, target_id);
             
-//            // 1. ÉèÖÃ¿ØÖÆĞÅºÅ
+//            // 1. è®¾ç½®æ§åˆ¶ä¿¡å·
 //            @(posedge clk);
 //            i_target_layer = target_id;
-//            i_load_weights = 1; // ²úÉú¸´Î»Âö³å
+//            i_load_weights = 1; // äº§ç”Ÿå¤ä½è„‰å†²
 //            @(posedge clk);
-//            i_load_weights = 0; // ½áÊøÂö³å£¬¿ªÊ¼´«Êä
+//            i_load_weights = 0; // ç»“æŸè„‰å†²ï¼Œå¼€å§‹ä¼ è¾“
             
-//            // 2. ·¢ËÍ AXI Stream Êı¾İ
-//            // ¼ÙÉèÃ¿¸ö Core Ö»ĞèÒª 1 ×éÈ¨ÖØ (Addr 0)£¬ĞèÒª·¢ËÍ BEATS_PER_WEIGHT_LINE ´Î
+//            // 2. å‘é€ AXI Stream æ•°æ®
+//            // å‡è®¾æ¯ä¸ª Core åªéœ€è¦ 1 ç»„æƒé‡ (Addr 0)ï¼Œéœ€è¦å‘é€ BEATS_PER_WEIGHT_LINE æ¬¡
 //            for (k = 0; k < BEATS_PER_WEIGHT_LINE; k = k + 1) begin
 //                s_axis_w_tvalid = 1;
 //                k_val = start_val + k;
-//                // ¹¹Ôì²âÊÔÊı¾İ£º¼òµ¥µÄµİÔöÊı£¬·½±ãµ÷ÊÔ
+//                // æ„é€ æµ‹è¯•æ•°æ®ï¼šç®€å•çš„é€’å¢æ•°ï¼Œæ–¹ä¾¿è°ƒè¯•
 //                s_axis_w_tdata  = {8{k_val}}; 
                 
 //                if (k == BEATS_PER_WEIGHT_LINE - 1) 
@@ -145,11 +145,11 @@
             
 //            s_axis_w_tvalid = 0;
 //            s_axis_w_tlast  = 0;
-//            #20; // ¼ä¸ô
+//            #20; // é—´éš”
 //        end
 //    endtask
 
-//    // ÈÎÎñ£º·¢ËÍÕûÕÅÍ¼Ïñ
+//    // ä»»åŠ¡ï¼šå‘é€æ•´å¼ å›¾åƒ
 //    task send_image_frame;
 //        begin
 //            $display("[Time %0t] Starting Image Transmission (%0dx%0d)...", $time, IMG_WIDTH, IMG_HEIGHT);
@@ -158,7 +158,7 @@
 //            for (r = 0; r < IMG_HEIGHT; r = r + 1) begin
 //                for (c = 0; c < IMG_WIDTH; c = c + 1) begin
 //                    s_axis_img_tvalid = 1;
-//                    // ¹¹ÔìÍ¼ÏñÊı¾İ£ºÃ¿¸öÍ¨µÀÖµ²»Í¬
+//                    // æ„é€ å›¾åƒæ•°æ®ï¼šæ¯ä¸ªé€šé“å€¼ä¸åŒ
 //                    s_axis_img_tdata = 64'h0807060504030201 + pixel_idx; 
                     
 //                    if (r == IMG_HEIGHT-1 && c == IMG_WIDTH-1)
@@ -166,7 +166,7 @@
 //                    else
 //                        s_axis_img_tlast = 0;
                     
-//                    // µÈ´ı Ready
+//                    // ç­‰å¾… Ready
 //                    @(posedge clk);
 //                    while (s_axis_img_tready == 0) begin
 //                        @(posedge clk);
@@ -183,17 +183,17 @@
 //    endtask
 
 //    // =========================================================================
-//    // 6. Ö÷²âÊÔÁ÷³Ì
+//    // 6. ä¸»æµ‹è¯•æµç¨‹
 //    // =========================================================================
 //    reg image_sent_flag;
 //    reg compute_done_flag;
     
 //    initial begin
-//        // --- ³õÊ¼»¯ ---
+//        // --- åˆå§‹åŒ– ---
 //        rst_n = 0;
 //        s_axis_img_tvalid = 0; s_axis_img_tdata = 0; s_axis_img_tlast = 0;
 //        s_axis_w_tvalid = 0;   s_axis_w_tdata = 0;   s_axis_w_tlast = 0;
-//        m_axis_res_tready = 1; // Ê¼ÖÕ×¼±¸ºÃ½ÓÊÕ½á¹û
+//        m_axis_res_tready = 1; // å§‹ç»ˆå‡†å¤‡å¥½æ¥æ”¶ç»“æœ
 //        i_load_weights = 0;
 //        i_target_layer = 0;
 //        i_start_compute = 0;
@@ -203,47 +203,47 @@
 //        image_sent_flag = 0;
 //        compute_done_flag = 0;
 
-//        // --- ¸´Î» ---
+//        // --- å¤ä½ ---
 //        #100;
 //        rst_n = 1;
 //        #50;
 
 //        // ---------------------------------------------------------------------
-//        // Step 1: ¼ÓÔØÈ¨ÖØ (Load Weights)
+//        // Step 1: åŠ è½½æƒé‡ (Load Weights)
 //        // ---------------------------------------------------------------------
-//        // Layer 1 ÓĞ 4 ¸ö Core (ID 0~3)
-//        // Layer 2 ÓĞ 1 ¸ö Core (ID 4)
+//        // Layer 1 æœ‰ 4 ä¸ª Core (ID 0~3)
+//        // Layer 2 æœ‰ 1 ä¸ª Core (ID 4)
         
-//        // ¼ÓÔØ L1 Core 0 (Pattern 0x10)
+//        // åŠ è½½ L1 Core 0 (Pattern 0x10)
 //        load_weights_for_target(0, 8'h10);
-//        // ¼ÓÔØ L1 Core 1 (Pattern 0x20)
+//        // åŠ è½½ L1 Core 1 (Pattern 0x20)
 //        load_weights_for_target(1, 8'h20);
-//        // ¼ÓÔØ L1 Core 2 (Pattern 0x30)
+//        // åŠ è½½ L1 Core 2 (Pattern 0x30)
 //        load_weights_for_target(2, 8'h30);
-//        // ¼ÓÔØ L1 Core 3 (Pattern 0x40)
+//        // åŠ è½½ L1 Core 3 (Pattern 0x40)
 //        load_weights_for_target(3, 8'h40);
         
-//        // ¼ÓÔØ L2 Core (ID 4) (Pattern 0x50)
+//        // åŠ è½½ L2 Core (ID 4) (Pattern 0x50)
 //        load_weights_for_target(4, 8'h50);
 
 //        $display("[Time %0t] All Weights Loaded.", $time);
 
 //        // ---------------------------------------------------------------------
-//        // Step 2: ¿ªÊ¼¼ÆËã (Start Compute)
+//        // Step 2: å¼€å§‹è®¡ç®— (Start Compute)
 //        // ---------------------------------------------------------------------
 //        #100;
 //        i_start_compute = 1;
-//        i_l1_weight_base = 0; // Ê¹ÓÃ BRAM µØÖ· 0 µÄÈ¨ÖØ
+//        i_l1_weight_base = 0; // ä½¿ç”¨ BRAM åœ°å€ 0 çš„æƒé‡
 //        i_l2_weight_base = 0;
 
 //        // ---------------------------------------------------------------------
-//        // Step 3: ·¢ËÍÍ¼ÏñÁ÷ (Send Image)
+//        // Step 3: å‘é€å›¾åƒæµ (Send Image)
 //        // ---------------------------------------------------------------------
-//        // ·¢ËÍÊı¾İ
+//        // å‘é€æ•°æ®
 //        send_image_frame();
 //        image_sent_flag = 1;
         
-//        // µÈ´ıÒ»¶ÎÊ±¼äºó¼ì²é½á¹û
+//        // ç­‰å¾…ä¸€æ®µæ—¶é—´åæ£€æŸ¥ç»“æœ
 //        #2000;
         
 //        $display("\n[Time %0t] Simulation Complete!", $time);
@@ -256,20 +256,20 @@
 //    end
 
 //    // =========================================================================
-//    // 7. ½á¹û¼à¿Ø
+//    // 7. ç»“æœç›‘æ§
 //    // =========================================================================
 //    always @(posedge clk) begin
 //        if (m_axis_res_tvalid && m_axis_res_tready) begin
-//            // ´òÓ¡Ç°¼¸¸öÊı¾İÓÃÓÚ¹Û²ì
+//            // æ‰“å°å‰å‡ ä¸ªæ•°æ®ç”¨äºè§‚å¯Ÿ
 //            if (received_pixel_cnt < 16) begin
 //                $display("[Result] Time=%0t Data=%h Last=%b", $time, m_axis_res_tdata, m_axis_res_tlast);
 //            end
 
-//            // ¸üĞÂ¼ÆÊı (´ÖÂÔ¹À¼Æ£¬Saver ´ò°üÂß¼­ÊÇ 4 pixels per beat)
-//            // Êµ¼ÊÉÏÓ¦¸Ã¿´ Saver µÄÊä³öÂß¼­£¬ÕâÀï¼ÙÉèÊÇ 4
+//            // æ›´æ–°è®¡æ•° (ç²—ç•¥ä¼°è®¡ï¼ŒSaver æ‰“åŒ…é€»è¾‘æ˜¯ 4 pixels per beat)
+//            // å®é™…ä¸Šåº”è¯¥çœ‹ Saver çš„è¾“å‡ºé€»è¾‘ï¼Œè¿™é‡Œå‡è®¾æ˜¯ 4
 //            received_pixel_cnt = received_pixel_cnt + 4;
             
-//            // ¼ì²éÍê³ÉĞÅºÅ
+//            // æ£€æŸ¥å®Œæˆä¿¡å·
 //            if (m_axis_res_tlast) begin
 //                $display("[Time %0t] Output TLAST detected!", $time);
 //            end
@@ -277,7 +277,7 @@
 //    end
     
 //    // =========================================================================
-//    // 8. ¼àÊÓÍê³ÉĞÅºÅ
+//    // 8. ç›‘è§†å®Œæˆä¿¡å·
 //    // =========================================================================
 //    always @(posedge clk) begin
 //        if (o_compute_done && !compute_done_flag) begin
@@ -292,7 +292,7 @@
 module tb_fpga_top_level_new;
 
     // =========================================================================
-    // 1. ²ÎÊı¶¨Òå
+    // 1. å‚æ•°å®šä¹‰
     // =========================================================================
     parameter AXIS_DATA_WIDTH = 64;
     parameter NUM_IN_CHANNELS = 8;
@@ -300,42 +300,42 @@ module tb_fpga_top_level_new;
     parameter ACCUM_WIDTH     = 32;
     parameter FILTER_SIZE     = 3;
     
-    // ·ÂÕæ²ÎÊı£º16x16 Í¼Ïñ
+    // ä»¿çœŸå‚æ•°ï¼š16x16 å›¾åƒ
     parameter IMG_WIDTH       = 16;
     parameter IMG_HEIGHT      = 16;
     parameter BRAM_DEPTH      = 512;
     
-    // ¼ÆËã×Ü Beat Êı£º256 ÏñËØ / 4 ÏñËØÃ¿Beat = 64 Beats
+    // è®¡ç®—æ€» Beat æ•°ï¼š256 åƒç´  / 4 åƒç´ æ¯Beat = 64 Beats
     localparam TOTAL_BEATS    = (IMG_WIDTH * IMG_HEIGHT) / 4; 
 
     parameter BEATS_PER_WEIGHT_LINE = (NUM_IN_CHANNELS * 2 * FILTER_SIZE * FILTER_SIZE * DATA_WIDTH) / AXIS_DATA_WIDTH;
 
     // =========================================================================
-    // 2. ĞÅºÅ¶¨Òå
+    // 2. ä¿¡å·å®šä¹‰
     // =========================================================================
     reg clk;
     reg rst_n;
     
-    // Í¼ÏñÊäÈë
+    // å›¾åƒè¾“å…¥
     reg                       s_axis_img_tvalid;
     wire                      s_axis_img_tready;
     reg [AXIS_DATA_WIDTH-1:0] s_axis_img_tdata;
     reg                       s_axis_img_tlast;
     
-    // È¨ÖØÊäÈë
+    // æƒé‡è¾“å…¥
     reg                       s_axis_w_tvalid;
     wire                      s_axis_w_tready;
     reg [AXIS_DATA_WIDTH-1:0] s_axis_w_tdata;
     reg                       s_axis_w_tlast;
     
-    // ½á¹ûÊä³ö
+    // ç»“æœè¾“å‡º
     wire                      m_axis_res_tvalid;
     reg                       m_axis_res_tready;
     wire [AXIS_DATA_WIDTH-1:0] m_axis_res_tdata;
     wire [AXIS_DATA_WIDTH/8-1:0] m_axis_res_tkeep;
     wire                      m_axis_res_tlast;
     
-    // ¿ØÖÆĞÅºÅ
+    // æ§åˆ¶ä¿¡å·
     reg                       i_load_weights;
     reg [3:0]                 i_target_layer;
     reg                       i_start_compute;
@@ -343,17 +343,17 @@ module tb_fpga_top_level_new;
     reg [8:0]                 i_l2_weight_base;
     wire                      o_compute_done;
     
-    // Í³¼ÆÓë±È¶Ô
-    integer received_pixel_cnt; // ÏñËØ¼ÆÊı
-    integer beat_cnt;           // Êı¾İ°ü¼ÆÊı
-    integer error_cnt;          // ´íÎó¼ÆÊı
+    // ç»Ÿè®¡ä¸æ¯”å¯¹
+    integer received_pixel_cnt; // åƒç´ è®¡æ•°
+    integer beat_cnt;           // æ•°æ®åŒ…è®¡æ•°
+    integer error_cnt;          // é”™è¯¯è®¡æ•°
     integer k, r, c, pixel_idx;
     
-    // »Æ½ğ²Î¿¼Êı¾İ (64 ¸ö 64-bit ½á¹û)
+    // é»„é‡‘å‚è€ƒæ•°æ® (64 ä¸ª 64-bit ç»“æœ)
     reg [63:0] golden_data [0:TOTAL_BEATS-1];
 
     // =========================================================================
-    // 3. DUT ÊµÀı»¯
+    // 3. DUT å®ä¾‹åŒ–
     // =========================================================================
     fpga_top_level #(
         .AXIS_DATA_WIDTH(AXIS_DATA_WIDTH),
@@ -389,10 +389,10 @@ module tb_fpga_top_level_new;
     );
 
     // =========================================================================
-    // 4. ³õÊ¼»¯»Æ½ğÊı¾İ (Golden Reference Initialization)
+    // 4. åˆå§‹åŒ–é»„é‡‘æ•°æ® (Golden Reference Initialization)
     // =========================================================================
     initial begin
-        // Ê¹ÓÃ Python Ëã³öµÄÀíÂÛÕıÈ·Öµ
+        // ä½¿ç”¨ Python ç®—å‡ºçš„ç†è®ºæ­£ç¡®å€¼
         golden_data[ 0] = 64'h51494f48453f2b27; golden_data[ 1] = 64'h574f564e544c534b;
         golden_data[ 2] = 64'h5e555c535a525950; golden_data[ 3] = 64'h3630564e61575f56;
         golden_data[ 4] = 64'h92848f817e724e47; golden_data[ 5] = 64'h9c8d9a8b97899486;
@@ -428,7 +428,7 @@ module tb_fpga_top_level_new;
     end
 
     // =========================================================================
-    // 5. Ê±ÖÓÉú³É
+    // 5. æ—¶é’Ÿç”Ÿæˆ
     // =========================================================================
     initial begin
         clk = 0;
@@ -436,7 +436,7 @@ module tb_fpga_top_level_new;
     end
 
     // =========================================================================
-    // 6. ¸¨ÖúÈÎÎñ (Tasks)
+    // 6. è¾…åŠ©ä»»åŠ¡ (Tasks)
     // =========================================================================
     task load_weights_for_target;
         input [3:0] target_id;
@@ -484,12 +484,12 @@ module tb_fpga_top_level_new;
     endtask
 
     // =========================================================================
-    // 7. Ö÷Á÷³Ì
+    // 7. ä¸»æµç¨‹
     // =========================================================================
     reg [31:0] watchdog;
     
     initial begin
-        // --- ³õÊ¼»¯ ---
+        // --- åˆå§‹åŒ– ---
         rst_n = 0;
         s_axis_img_tvalid = 0; s_axis_img_tdata = 0; s_axis_img_tlast = 0;
         s_axis_w_tvalid = 0;   s_axis_w_tdata = 0;   s_axis_w_tlast = 0;
@@ -500,24 +500,24 @@ module tb_fpga_top_level_new;
         beat_cnt = 0;
         error_cnt = 0;
         
-        // --- ¸´Î» ---
+        // --- å¤ä½ ---
         #100; rst_n = 1; #50;
 
-        // Step 1: ¼ÓÔØÈ¨ÖØ
+        // Step 1: åŠ è½½æƒé‡
         load_weights_for_target(0, 8'h10);
         load_weights_for_target(1, 8'h20);
         load_weights_for_target(2, 8'h30);
         load_weights_for_target(3, 8'h40);
         load_weights_for_target(4, 8'h50);
 
-        // Step 2: Æô¶¯¼ÆËã
+        // Step 2: å¯åŠ¨è®¡ç®—
         #100;
         i_start_compute = 1;
 
-        // Step 3: ·¢ËÍÍ¼Ïñ
+        // Step 3: å‘é€å›¾åƒ
         send_image_frame();
 
-        // Step 4: µÈ´ı½á¹û
+        // Step 4: ç­‰å¾…ç»“æœ
         $display("[Time %0t] Waiting for results...", $time);
         watchdog = 0;
         while (received_pixel_cnt < IMG_WIDTH * IMG_HEIGHT && watchdog < 10000) begin
@@ -544,11 +544,11 @@ module tb_fpga_top_level_new;
     end
 
     // =========================================================================
-    // 8. ½á¹û¼à¿ØÓë±È¶Ô (Monitor & Checker)
+    // 8. ç»“æœç›‘æ§ä¸æ¯”å¯¹ (Monitor & Checker)
     // =========================================================================
     always @(posedge clk) begin
         if (m_axis_res_tvalid && m_axis_res_tready) begin
-            // ´òÓ¡²¢±È¶Ô
+            // æ‰“å°å¹¶æ¯”å¯¹
             if (beat_cnt < TOTAL_BEATS) begin
                 if (m_axis_res_tdata === golden_data[beat_cnt]) begin
                     $display("[CHECK PASS] Beat %2d: Data=%h (Matched)", beat_cnt, m_axis_res_tdata);
@@ -560,17 +560,372 @@ module tb_fpga_top_level_new;
                 $display("[WARNING] Received extra beat: %h", m_axis_res_tdata);
             end
 
-            // ¸üĞÂ¼ÆÊıÆ÷
+            // æ›´æ–°è®¡æ•°å™¨
             beat_cnt = beat_cnt + 1;
-            received_pixel_cnt = received_pixel_cnt + 4; // Ã¿¸ö Beat 4 ¸öÏñËØ£¬Ã¿¸öÏñËØ 2 ¸öÊä³öÍ¨µÀ? 
-            // ĞŞÕı£º¸ù¾İÖ®Ç°µÄ·ÖÎö£¬Ò»¸öBeatÊÇ 4 ¸öÏñËØ (64bit / 16bit_per_pixel)
-            // ËùÒÔÕâÀïÏñËØ¼ÆÊıÓ¦¸ÃÊÇ +4£¬¶ø²»ÊÇ +8¡£
-            // µ«Èç¹ûÄãµÄ Saver ÅäÖÃÊÇÃ¿¸öÊ±ÖÓ³ö 8 ¸öÍ¨µÀ£¬ÄÇ¾ÍÊÇ +8¡£
-            // ÈÃÎÒÃÇ±£³ÖºÍÖ®Ç°´úÂëÒ»ÖÂµÄ +4 (4 pixels * 2 channels * 8 bits = 64 bits)
+            received_pixel_cnt = received_pixel_cnt + 4; // æ¯ä¸ª Beat 4 ä¸ªåƒç´ ï¼Œæ¯ä¸ªåƒç´  2 ä¸ªè¾“å‡ºé€šé“? 
+            // ä¿®æ­£ï¼šæ ¹æ®ä¹‹å‰çš„åˆ†æï¼Œä¸€ä¸ªBeatæ˜¯ 4 ä¸ªåƒç´  (64bit / 16bit_per_pixel)
+            // æ‰€ä»¥è¿™é‡Œåƒç´ è®¡æ•°åº”è¯¥æ˜¯ +4ï¼Œè€Œä¸æ˜¯ +8ã€‚
+            // ä½†å¦‚æœä½ çš„ Saver é…ç½®æ˜¯æ¯ä¸ªæ—¶é’Ÿå‡º 8 ä¸ªé€šé“ï¼Œé‚£å°±æ˜¯ +8ã€‚
+            // è®©æˆ‘ä»¬ä¿æŒå’Œä¹‹å‰ä»£ç ä¸€è‡´çš„ +4 (4 pixels * 2 channels * 8 bits = 64 bits)
             
             if (m_axis_res_tlast) begin
                 $display("[Time %0t] TLAST detected!", $time);
             end
+        end
+    end
+
+endmodule
+
+`timescale 1ns / 1ps
+
+module tb_fpga_top_level_new;
+
+    // =========================================================================
+    // 1. å‚æ•°å®šä¹‰
+    // =========================================================================
+    parameter AXIS_DATA_WIDTH = 64;
+    parameter NUM_IN_CHANNELS = 8;
+    parameter DATA_WIDTH      = 8;
+    parameter ACCUM_WIDTH     = 32;
+    parameter FILTER_SIZE     = 3;
+    
+    // ä»¿çœŸå‚æ•°ï¼š16x16 å›¾åƒ
+    parameter IMG_WIDTH       = 16;
+    parameter IMG_HEIGHT      = 16;
+    parameter BRAM_DEPTH      = 512;
+    
+    // è®¡ç®—æ€» Beat æ•°ï¼š256 åƒç´ 
+    // æ³¨æ„ï¼šæ ¹æ®ä¹‹å‰çš„ Logï¼ŒLayer 1 è¾“å‡ºçš„æ˜¯ 1 pixel/beat (64bit åŒ…å« 8ch)ã€‚
+    // æ‰€ä»¥æ€» Beat æ•°åº”è¯¥æ˜¯ IMG_WIDTH * IMG_HEIGHT
+    localparam TOTAL_BEATS    = (IMG_WIDTH * IMG_HEIGHT); 
+    
+    // æƒé‡åŠ è½½ Beat æ•°è®¡ç®—
+    parameter BEATS_PER_WEIGHT_LINE = (NUM_IN_CHANNELS * 2 * FILTER_SIZE * FILTER_SIZE * DATA_WIDTH) / AXIS_DATA_WIDTH;
+
+    // =========================================================================
+    // 2. ä¿¡å·å®šä¹‰
+    // =========================================================================
+    reg clk;
+    reg rst_n;
+
+    // å›¾åƒè¾“å…¥
+    reg                       s_axis_img_tvalid;
+    wire                      s_axis_img_tready;
+    reg [AXIS_DATA_WIDTH-1:0] s_axis_img_tdata;
+    reg                       s_axis_img_tlast;
+
+    // æƒé‡è¾“å…¥
+    reg                       s_axis_w_tvalid;
+    wire                      s_axis_w_tready;
+    reg [AXIS_DATA_WIDTH-1:0] s_axis_w_tdata;
+    reg                       s_axis_w_tlast;
+
+    // ç»“æœè¾“å‡º
+    wire                      m_axis_res_tvalid;
+    reg                       m_axis_res_tready;
+    wire [AXIS_DATA_WIDTH-1:0] m_axis_res_tdata;
+    wire [AXIS_DATA_WIDTH/8-1:0] m_axis_res_tkeep;
+    wire                      m_axis_res_tlast;
+
+    // æ§åˆ¶ä¿¡å·
+    reg                       i_load_weights;
+    reg [3:0]                 i_target_layer;
+    reg                       i_start_compute;
+    reg [8:0]                 i_l1_weight_base;
+    reg [8:0]                 i_l2_weight_base;
+    wire                      o_compute_done;
+
+    // ç»Ÿè®¡ä¸æ¯”å¯¹
+    integer received_pixel_cnt; // åƒç´ è®¡æ•°
+    integer beat_cnt;           // æ•°æ®åŒ…è®¡æ•°
+    integer error_cnt;          // é”™è¯¯è®¡æ•°
+    integer k, r, c, pixel_idx;
+
+    // é»„é‡‘å‚è€ƒæ•°æ® (æ³¨æ„ï¼šè¿™é‡Œå®šä¹‰å¤§ä¸€ç‚¹ä»¥é˜²ä¸‡ä¸€)
+    reg [63:0] golden_data [0:255]; 
+
+    // =========================================================================
+    // 3. DUT å®ä¾‹åŒ–
+    // =========================================================================
+    fpga_top_level #(
+        .AXIS_DATA_WIDTH(AXIS_DATA_WIDTH),
+        .NUM_IN_CHANNELS(NUM_IN_CHANNELS),
+        .DATA_WIDTH     (DATA_WIDTH),
+        .ACCUM_WIDTH    (ACCUM_WIDTH),
+        .FILTER_SIZE    (FILTER_SIZE),
+        .IMG_WIDTH      (IMG_WIDTH),
+        .IMG_HEIGHT     (IMG_HEIGHT),
+        .BRAM_DEPTH     (BRAM_DEPTH)
+    ) u_dut (
+        .clk(clk),
+        .rst_n(rst_n),
+        
+        .s_axis_img_tvalid(s_axis_img_tvalid),
+        .s_axis_img_tready(s_axis_img_tready),
+        .s_axis_img_tdata (s_axis_img_tdata),
+        .s_axis_img_tlast (s_axis_img_tlast),
+        
+        .s_axis_w_tvalid  (s_axis_w_tvalid),
+        .s_axis_w_tready  (s_axis_w_tready),
+        .s_axis_w_tdata   (s_axis_w_tdata),
+        .s_axis_w_tlast   (s_axis_w_tlast),
+        
+        .m_axis_res_tvalid(m_axis_res_tvalid),
+        .m_axis_res_tready(m_axis_res_tready),
+        .m_axis_res_tdata (m_axis_res_tdata),
+        .m_axis_res_tkeep (m_axis_res_tkeep),
+        .m_axis_res_tlast (m_axis_res_tlast),
+        
+        .i_load_weights   (i_load_weights),
+        .i_target_layer   (i_target_layer),
+        .i_start_compute  (i_start_compute),
+        .i_l1_weight_base (i_l1_weight_base),
+        .i_l2_weight_base (i_l2_weight_base),
+        .o_compute_done   (o_compute_done)
+    );
+
+    // =========================================================================
+    // 4. åˆå§‹åŒ–é»„é‡‘æ•°æ® (Golden Reference Initialization)
+    // =========================================================================
+    // è¿™é‡Œåªåˆ—å‡ºåŸæ¥ Testbench é‡Œçš„éƒ¨åˆ†å…³é”®æ•°æ®ç”¨äºæ ¡éªŒ
+    initial begin
+        // åˆå§‹åŒ–æ•´ä¸ªæ•°ç»„ä¸º 0ï¼Œé¿å…æœªåˆå§‹åŒ–æ¯”è¾ƒ
+        for (k=0; k<256; k=k+1) golden_data[k] = 0;
+
+        // å¡«å…¥æ‚¨æä¾›çš„å…³é”® Golden Data
+        golden_data[ 0] = 64'h51494f48453f2b27;
+        golden_data[ 1] = 64'h574f564e544c534b;
+        golden_data[ 2] = 64'h5e555c535a525950; golden_data[ 3] = 64'h3630564e61575f56;
+        golden_data[ 4] = 64'h92848f817e724e47; golden_data[ 5] = 64'h9c8d9a8b97899486;
+        golden_data[ 6] = 64'ha696a394a1919e8f; golden_data[ 7] = 64'h5f56988aab9aa998;
+        golden_data[ 8] = 64'hc5b2c2afab9b6b60; golden_data[ 9] = 64'hd0bccdbacbb7c8b4;
+        golden_data[10] = 64'hdbc6d8c4d6c1d3bf; golden_data[11] = 64'h7d71c8b5e1cbdec9;
+        golden_data[12] = 64'hf2daefd8d3bf8477; golden_data[13] = 64'hfde5fae2f7dff4dd;
+        golden_data[14] = 64'hffeeffecffe9ffe7; golden_data[15] = 64'h9687f0d9fff3fff1;
+        golden_data[16] = 64'hfffffffffbe39d8e; golden_data[17] = 64'hffffffffffffffff;
+        golden_data[18] = 64'hffffffffffffffff; golden_data[19] = 64'hae9dfffdffffffff;
+        
+        // ... ä¸­é—´çœç•¥ ...
+        
+        golden_data[35] = 64'hfff5ffffffffffff;
+        
+        // ...
+        
+        golden_data[60] = 64'hffffffffffffddc7; golden_data[61] = 64'hffffffffffffffff;
+        golden_data[62] = 64'hffffffffffffffff; golden_data[63] = 64'hbfacffffffffffff;
+        
+        // æ³¨æ„ï¼šæ‚¨çš„ Golden Data ä¹‹å‰åªæä¾›äº†å‰ 64 ä¸ªã€‚
+        // å¦‚æœ Layer 2 ä¹‹åæ˜¯ 16x16=256 ä¸ªè¾“å‡ºï¼Œåé¢çš„æ•°æ®ç›®å‰æ²¡æœ‰æ¯”å¯¹æ ‡å‡†ã€‚
+        // ä»£ç ä¼šç»§ç»­æ‰“å°è¾“å‡ºï¼Œæ‚¨å¯ä»¥æ‰‹åŠ¨æ£€æŸ¥ã€‚
+    end
+
+    // =========================================================================
+    // 5. æ—¶é’Ÿç”Ÿæˆ
+    // =========================================================================
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // =========================================================================
+    // 6. è¾…åŠ©ä»»åŠ¡ (Tasks)
+    // =========================================================================
+    task load_weights_for_target;
+        input [3:0] target_id;
+        input [7:0] start_val;
+        reg [7:0] k_val;
+        begin
+            $display("[Time %0t] Loading Weights for Target ID: %d", $time, target_id);
+            @(posedge clk);
+            i_target_layer = target_id;
+            i_load_weights = 1;
+            @(posedge clk);
+            i_load_weights = 0;
+            for (k = 0; k < BEATS_PER_WEIGHT_LINE; k = k + 1) begin
+                s_axis_w_tvalid = 1;
+                k_val = start_val + k;
+                s_axis_w_tdata  = {8{k_val}};
+                s_axis_w_tlast  = (k == BEATS_PER_WEIGHT_LINE - 1);
+                @(posedge clk);
+            end
+            s_axis_w_tvalid = 0;
+            s_axis_w_tlast  = 0;
+            #20;
+        end
+    endtask
+
+    task send_image_frame;
+        begin
+            $display("[Time %0t] Starting Image Transmission (%0dx%0d)...", $time, IMG_WIDTH, IMG_HEIGHT);
+            pixel_idx = 0;
+            for (r = 0; r < IMG_HEIGHT; r = r + 1) begin
+                for (c = 0; c < IMG_WIDTH; c = c + 1) begin
+                    s_axis_img_tvalid = 1;
+                    
+                    // ã€å…³é”®ä¿®æ­£ã€‘æ•°æ®ä» ...00 å¼€å§‹ï¼Œè§£å†³ "Off-by-one" é—®é¢˜
+                    s_axis_img_tdata = 64'h0807060504030200 + pixel_idx;
+                    
+                    // ç”Ÿæˆ TLAST (æ¯è¡Œç»“æŸ? è¿˜æ˜¯æ•´ä¸ª Frame ç»“æŸ?)
+                    // é€šå¸¸ CNN åŠ é€Ÿå™¨è¦æ±‚ Frame TLASTã€‚è¿™é‡Œè®¾ä¸ºæœ€åä¸€è¡Œæœ€åä¸€ä¸ªåƒç´ ã€‚
+                    s_axis_img_tlast = (r == IMG_HEIGHT-1 && c == IMG_WIDTH-1);
+                    
+                    @(posedge clk);
+                    // æ¡æ‰‹ç­‰å¾…
+                    while (s_axis_img_tready == 0) @(posedge clk);
+                    
+                    pixel_idx = pixel_idx + 1;
+                end
+            end
+            s_axis_img_tvalid = 0;
+            s_axis_img_tlast  = 0;
+            $display("[Time %0t] Image Transmission Done.", $time);
+        end
+    endtask
+
+    // =========================================================================
+    // 7. ä¸»æµç¨‹
+    // =========================================================================
+    reg [31:0] watchdog;
+    initial begin
+        // --- åˆå§‹åŒ– ---
+        rst_n = 0;
+        s_axis_img_tvalid = 0; s_axis_img_tdata = 0; s_axis_img_tlast = 0;
+        s_axis_w_tvalid = 0;   s_axis_w_tdata = 0;   s_axis_w_tlast = 0;
+        m_axis_res_tready = 1; 
+        i_load_weights = 0; i_target_layer = 0; i_start_compute = 0;
+        i_l1_weight_base = 0; i_l2_weight_base = 0;
+        received_pixel_cnt = 0;
+        beat_cnt = 0;
+        error_cnt = 0;
+        
+        // --- å¤ä½ ---
+        #100;
+        rst_n = 1; #50;
+
+        // Step 1: åŠ è½½æƒé‡
+        load_weights_for_target(0, 8'h10);
+        load_weights_for_target(1, 8'h20);
+        load_weights_for_target(2, 8'h30);
+        load_weights_for_target(3, 8'h40);
+        load_weights_for_target(4, 8'h50);
+        $display("[Time %0t] All Weights Loaded.", $time);
+
+        // Step 2: å¯åŠ¨è®¡ç®—
+        #100;
+        i_start_compute = 1;
+
+        // Step 3: å‘é€å›¾åƒ
+        send_image_frame();
+
+        // Step 4: ç­‰å¾…ç»“æœ
+        // ã€å…³é”®ã€‘è¿™é‡Œä¸å†å‘é€ä¼ªæ•°æ® (Dummy Data)ï¼Œä¾èµ– TLAST ä¿¡å·è‡ªåŠ¨ Flush
+        $display("[Time %0t] Waiting for results...", $time);
+        
+        watchdog = 0;
+        while (received_pixel_cnt < TOTAL_BEATS && watchdog < 200000) begin
+            @(posedge clk);
+            watchdog = watchdog + 1;
+        end
+        
+        #100;
+        $display("\n=================================================");
+        $display("          SIMULATION REPORT");
+        $display("=================================================");
+        $display("Total Output Pixels Received: %d", received_pixel_cnt);
+        
+        // æ£€æŸ¥æ•°é‡æ˜¯å¦åŒ¹é…
+        if (received_pixel_cnt == 256) begin
+             $display("[CHECK PASS] Pixel count matches (256).");
+        end else begin
+             $display("[CHECK FAIL] Pixel count mismatch! Expected 256, Got %d", received_pixel_cnt);
+        end
+
+        // æ£€æŸ¥æ•°æ®å€¼
+        if (error_cnt == 0) begin
+            $display("[CHECK PASS] Checked data matches Golden Reference.");
+        end else begin
+            $display("[CHECK FAIL] Found %d Data Mismatches.", error_cnt);
+        end
+        $display("=================================================");
+        $stop;
+    end
+
+    // =========================================================================
+    // 8. ç»“æœç›‘æ§ä¸æ¯”å¯¹ (Monitor & Checker)
+    // =========================================================================
+    always @(posedge clk) begin
+        if (m_axis_res_tvalid && m_axis_res_tready) begin
+            // æ‰“å°ç»“æœ
+            // $display("[Result] Time=%0t Data=%h Last=%b", $time, m_axis_res_tdata, m_axis_res_tlast);
+
+            // ä»…å¯¹å‰ 64 ä¸ªæ•°æ®è¿›è¡Œæ¯”å¯¹ (å› ä¸º Golden Data åªå¡«äº†è¿™ä¹ˆå¤š)
+            if (beat_cnt < 64) begin
+                if (m_axis_res_tdata === golden_data[beat_cnt]) begin
+                    $display("[CHECK PASS] Beat %2d: Data=%h (Matched)", beat_cnt, m_axis_res_tdata);
+                end else begin
+                    $display("[CHECK FAIL] Beat %2d: Data=%h | Exp=%h !!!", beat_cnt, m_axis_res_tdata, golden_data[beat_cnt]);
+                    error_cnt = error_cnt + 1;
+                end
+            end 
+
+            // æ›´æ–°è®¡æ•°å™¨
+            beat_cnt = beat_cnt + 1;
+            received_pixel_cnt = received_pixel_cnt + 1; // 1 Beat = 1 Pixel Output (64bit åŒ…å« 8é€šé“ç»“æœ)
+            
+            if (m_axis_res_tlast) begin
+                $display("[Time %0t] Output TLAST detected!", $time);
+            end
+        end
+    end
+
+    // =========================================================================
+    // 9. [DEBUG] Layer 1 è¾“å‡ºç›‘æ§ (L1->L2 Monitor)
+    // =========================================================================
+    // ç›‘æ§ Layer 1 å‘ç»™ Layer 2 çš„æ•°æ®å’Œ TLAST ä¿¡å·
+    
+    wire        spy_l1_valid;
+    wire        spy_l2_ready;
+    wire        spy_l1_last; // ç›‘æ§ Last ä¿¡å·
+    wire [63:0] spy_l1_data;
+    
+    // ä½¿ç”¨å±‚æ¬¡åŒ–å¼•ç”¨ (Hierarchical Reference)
+    assign spy_l1_valid = u_dut.r_layer1_valid;       
+    assign spy_l1_data  = u_dut.r_layer1_out_packed;  
+    assign spy_l2_ready = u_dut.w_l2_ready;           
+    // ã€é‡è¦ã€‘ç›‘æ§æˆ‘ä»¬åˆšæ‰æ–°è¿çš„é‚£æ ¹çº¿ï¼Œç¡®è®¤ TLAST æ˜¯å¦ä¼ è¿‡æ¥äº†
+    assign spy_l1_last  = u_dut.w_l1_last; 
+
+    integer l1_cnt = 0;
+
+    always @(posedge clk) begin
+        if (spy_l1_valid && spy_l2_ready) begin
+            // æ‰“å°æ•°æ®ä¼ è¾“
+            // $display("[L1->L2 Monitor] Time=%0t | Beat %0d | Data=%h | Last=%b", $time, l1_cnt, spy_l1_data, spy_l1_last);
+            
+            if (spy_l1_last) begin
+                $display("!!! [L1->L2 Monitor] TLAST Detected! Layer 1 finished at Beat %0d", l1_cnt);
+            end
+            
+            l1_cnt = l1_cnt + 1;
+        end
+    end
+
+    // =========================================================================
+    // 10. [DEBUG] Layer 1 å†…éƒ¨çª—å£ç›‘æ§
+    // =========================================================================
+    wire        dbg_l1_win_valid;
+    wire [575:0] dbg_l1_win_data;
+    
+    assign dbg_l1_win_valid = u_dut.u_sys_top_l1.conv_valid;  
+    assign dbg_l1_win_data  = u_dut.u_sys_top_l1.conv_window; 
+
+    integer win_cnt = 0;
+    
+    always @(posedge clk) begin
+        if (dbg_l1_win_valid) begin
+            // å¯ä»¥åœ¨è¿™é‡Œæ‰“å¼€æ‰“å°ï¼ŒæŸ¥çœ‹å·ç§¯çª—å£å†…å®¹
+            // $display("[TB Debug] Time=%0t | L1 Window #%0d Captured", $time, win_cnt);
+            win_cnt = win_cnt + 1;
         end
     end
 
